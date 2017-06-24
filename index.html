@@ -1,0 +1,135 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>#fedidwgugl  Generator</title>
+
+		<link rel="stylesheet" href="css/normalize.css">
+		<link rel="stylesheet" href="css/milligram.min.css">
+
+		<style>
+			#canvas {
+					width: inherit;
+			}
+
+			.button-black {
+  				background-color: #282727;
+  				border-color: #282727;
+			}
+		</style>
+	</head>
+	<body>
+		<div style="font-family: Dejavu Sans Book;"> </div>
+		<br/>
+		<br/>
+		<div class="row">
+			<div class="column column-33 column-offset-33"><h1>#fedidwgugl Generator</h1></div>
+		</div>
+		<div class="row">
+			<div class="column column-33 column-offset-33"><canvas id="canvas"></canvas></div>
+		</div>
+		<div class="row">
+			<div class="column column-33 column-offset-33">
+				<form>
+					<fieldset>
+						<label for="slogan-field">Slogan</label>
+						<textarea placeholder="Hier könnte ihr Slongan stehen..." id="slogan-field"></textarea>
+			    		<a id="save-button" class="button button-black" href="#" target="_blank">Abspeichern</a>
+					</fieldset>
+				</form>
+			</div>
+		</div>
+		<div class="row">
+			<div class="column column-33 column-offset-33">
+				<small>
+					Der Betrieber dieses Generators distanziert sich ausdrücklich von der
+					Partei CDU, deren politischen Inhalten und ihrer miserablen PR-Abteilung.
+					Der Gebrauch dieses Generators zu Wahlkampfzwecken
+					(unabhängig von der Partei) ist nicht gestattet.
+				</small>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		(function() {
+			var boxOversize = 50;
+			var boxSpacing = 75;
+			var textHeight = 90;
+
+			var canvas = document.getElementById('canvas');
+			var ctx = canvas.getContext('2d');
+
+			var background = new Image();
+
+			var sloganField = document.getElementById('slogan-field');
+			var saveButton = document.getElementById('save-button');
+
+			function redraw() {
+				ctx.drawImage(background, 0, 0);
+
+				var slogan = sloganField.value;
+				if(slogan === "") {
+					slogan = sloganField.placeholder;
+				}
+
+				ctx.font = 'bold ' + textHeight + 'px Dejavu Sans Book';
+				ctx.textBaseline = 'middle';
+
+				var lines = slogan.split('\n');
+
+				totalTextHeight = lines.length * (textHeight + boxOversize + boxSpacing);
+				textStartY = canvas.height / 2 - totalTextHeight / 2;
+
+				for(lineNum = 0; lineNum < lines.length; lineNum++) {
+					var line = lines[lineNum];
+
+					var textWidth = ctx.measureText(line).width;
+
+					console.log(textWidth);
+
+					textX = canvas.width / 2 - textWidth / 2;
+					textY = textStartY + lineNum * (textHeight + boxOversize + boxSpacing / 2) +
+									(textHeight + boxOversize + boxSpacing) / 2;
+
+					boxPosX = textX - boxOversize / 2;
+					boxWidth = textWidth + boxOversize;
+
+					boxPosY = textY - (textHeight + boxOversize) / 2;
+					boxHeight = textHeight + boxOversize;
+
+					ctx.fillStyle = 'white';
+					ctx.fillRect(boxPosX, boxPosY, boxWidth, boxHeight);
+
+					ctx.fillStyle = 'black';
+					ctx.fillText(line, textX, textY);
+				}
+			}
+
+			function saveCanvas() {
+				redraw();
+				this.href= canvas.toDataURL('image/png');
+			}
+
+
+
+			background.addEventListener('load', function() {
+				var DejavuSansBook = new FontFace('Dejavu Sans Book', 'url(DejaVuSans-webfont.woff)');
+				DejavuSansBook.load().then(function() {
+					canvas.width = background.width;
+					canvas.height = background.height;
+
+
+					sloganField.addEventListener('change', redraw, false);
+					sloganField.addEventListener('keyup', redraw, false);
+
+					saveButton.addEventListener('click', saveCanvas, false);
+					redraw();
+				});
+			}, false);
+
+			background.src = 'background.png'
+		})();
+	</script>
+	</body>
+</html>
