@@ -4,6 +4,7 @@
 		<meta charset="utf-8">
 		<title>#fedidwgugl  Generator</title>
 
+		<link rel="stylesheet" href="css/font/font.css">
 		<link rel="stylesheet" href="css/normalize.css">
 		<link rel="stylesheet" href="css/milligram.min.css">
 
@@ -16,10 +17,13 @@
   				background-color: #282727;
   				border-color: #282727;
 			}
+
+			.invisible-font-loader {
+				font-family: 'DejaVu Sans Book';
+			}
 		</style>
 	</head>
 	<body>
-		<div style="font-family: Dejavu Sans Book;"> </div>
 		<br/>
 		<br/>
 		<div class="row">
@@ -42,80 +46,79 @@
 		<div class="row">
 			<div class="column column-33 column-offset-33">
 				<small>
-					Der Betrieber dieses Generators distanziert sich ausdrücklich von der
+					Der Betreiber dieses Generators distanziert sich ausdrücklich von der
 					Partei CDU, deren politischen Inhalten und ihrer miserablen PR-Abteilung.
 					Der Gebrauch dieses Generators zu Wahlkampfzwecken
 					(unabhängig von der Partei) ist nicht gestattet.
 				</small>
 			</div>
 		</div>
-	</div>
 
-	<script type="text/javascript">
-		(function() {
-			var boxOversize = 50;
-			var boxSpacing = 75;
-			var textHeight = 90;
+		<div class="invisible-font-loader">&nbsp;</div>
 
-			var canvas = document.getElementById('canvas');
-			var ctx = canvas.getContext('2d');
+		<script type="text/javascript">
+			(function() {
+				var boxOversize = 50;
+				var boxSpacing = 75;
+				var textHeight = 90;
 
-			var background = new Image();
+				var canvas = document.getElementById('canvas');
+				var ctx = canvas.getContext('2d');
 
-			var sloganField = document.getElementById('slogan-field');
-			var saveButton = document.getElementById('save-button');
+				var background = new Image();
 
-			function redraw() {
-				ctx.drawImage(background, 0, 0);
+				var sloganField = document.getElementById('slogan-field');
+				var saveButton = document.getElementById('save-button');
 
-				var slogan = sloganField.value;
-				if(slogan === "") {
-					slogan = sloganField.placeholder;
+				function redraw() {
+					ctx.drawImage(background, 0, 0);
+
+					var slogan = sloganField.value;
+					if(slogan === "") {
+						slogan = sloganField.placeholder;
+					}
+
+					ctx.font = 'bold ' + textHeight + 'px DejaVu Sans Book';
+					ctx.textBaseline = 'middle';
+
+					var lines = slogan.split('\n');
+
+					totalTextHeight = lines.length * (textHeight + boxOversize + boxSpacing);
+					textStartY = canvas.height / 2 - totalTextHeight / 2;
+
+					for(lineNum = 0; lineNum < lines.length; lineNum++) {
+						var line = lines[lineNum];
+
+						var textWidth = ctx.measureText(line).width;
+
+						console.log(textWidth);
+
+						textX = canvas.width / 2 - textWidth / 2;
+						textY = textStartY + lineNum * (textHeight + boxOversize + boxSpacing / 2) +
+										(textHeight + boxOversize + boxSpacing) / 2;
+
+						boxPosX = textX - boxOversize / 2;
+						boxWidth = textWidth + boxOversize;
+
+						boxPosY = textY - (textHeight + boxOversize) / 2;
+						boxHeight = textHeight + boxOversize;
+
+						ctx.fillStyle = 'white';
+						ctx.fillRect(boxPosX, boxPosY, boxWidth, boxHeight);
+
+						ctx.fillStyle = 'black';
+						ctx.fillText(line, textX, textY);
+					}
 				}
 
-				ctx.font = 'bold ' + textHeight + 'px Dejavu Sans Book';
-				ctx.textBaseline = 'middle';
-
-				var lines = slogan.split('\n');
-
-				totalTextHeight = lines.length * (textHeight + boxOversize + boxSpacing);
-				textStartY = canvas.height / 2 - totalTextHeight / 2;
-
-				for(lineNum = 0; lineNum < lines.length; lineNum++) {
-					var line = lines[lineNum];
-
-					var textWidth = ctx.measureText(line).width;
-
-					console.log(textWidth);
-
-					textX = canvas.width / 2 - textWidth / 2;
-					textY = textStartY + lineNum * (textHeight + boxOversize + boxSpacing / 2) +
-									(textHeight + boxOversize + boxSpacing) / 2;
-
-					boxPosX = textX - boxOversize / 2;
-					boxWidth = textWidth + boxOversize;
-
-					boxPosY = textY - (textHeight + boxOversize) / 2;
-					boxHeight = textHeight + boxOversize;
-
-					ctx.fillStyle = 'white';
-					ctx.fillRect(boxPosX, boxPosY, boxWidth, boxHeight);
-
-					ctx.fillStyle = 'black';
-					ctx.fillText(line, textX, textY);
+				function saveCanvas() {
+					redraw();
+					this.href= canvas.toDataURL('image/png');
 				}
-			}
-
-			function saveCanvas() {
-				redraw();
-				this.href= canvas.toDataURL('image/png');
-			}
 
 
 
-			background.addEventListener('load', function() {
-				var DejavuSansBook = new FontFace('Dejavu Sans Book', 'url(DejaVuSans-webfont.woff)');
-				DejavuSansBook.load().then(function() {
+				background.addEventListener('load', function() {
 					canvas.width = background.width;
 					canvas.height = background.height;
 
@@ -125,11 +128,10 @@
 
 					saveButton.addEventListener('click', saveCanvas, false);
 					redraw();
-				});
-			}, false);
+				}, false);
 
-			background.src = 'background.png'
-		})();
-	</script>
+				background.src = 'background.png'
+			})();
+		</script>
 	</body>
 </html>
